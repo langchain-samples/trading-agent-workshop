@@ -9,7 +9,7 @@ Mix-and-match modules for ~1.5 hour customer workshops. Pick 2-3 modules, run th
 | **0** | Fleet — slide intro + open the Fleet UI | ~10 min | `modules/00_fleet.ipynb` |
 | **1** | LangGraph 201 — Research agent from scratch (state, nodes, edges, `create_agent` + middleware, supervisor, memory) | ~45 min | `modules/01_langgraph.ipynb` |
 | **2** | Deep Agents — Harness, Tools, Subagents, Memory, Middleware, HITL, Skills | ~45 min | `modules/02_deep_agents.ipynb` |
-| **3** | Deploy — `deepagents` CLI + LangSmith Deployments | ~15 min | `modules/03_deploy.ipynb` |
+| **3** | Deploy — `langgraph` CLI + LangSmith Deployments | ~15 min | `modules/03_deploy.ipynb` |
 | **4** | LangSmith — Tracing, querying traces, offline + online evals, annotation queues | ~30 min | `modules/04_langsmith.ipynb` |
 
 Each module is a standalone Jupyter notebook. Modules share the project's setup, `utils/`, and `agents/` so combining them is as simple as opening multiple notebooks in order.
@@ -101,9 +101,9 @@ model = init_chat_model("openai:gpt-4.1-mini")
 
 ## Deploy (Module 3)
 
-Module 3 deploys the agent at `agents/deep_agent/` to LangSmith via the `deepagents` CLI (installed by `uv sync`).
+Module 3 deploys the agent at `agents/deep_agent/` to LangSmith via the `langgraph` CLI (installed by `uv sync`). The deploy config is `langgraph.json` at the workshop root.
 
-Your `LANGSMITH_API_KEY` must have deployment permissions
+Your `LANGSMITH_API_KEY` must have deployment permissions (use a `lsv2_sk_...` service key).
 
 ## Project Structure
 
@@ -119,7 +119,6 @@ modular-workshops/
 │   └── deep_agent/                 (deployable agent for Module 3)
 │       ├── agent.py
 │       ├── AGENTS.md
-│       ├── deepagents.toml
 │       └── skills/
 │           ├── linkedin-post/SKILL.md
 │           └── twitter-post/SKILL.md
@@ -133,7 +132,7 @@ modular-workshops/
 
 ## Common Issues
 
-**`deepagents deploy` fails with 403 / permission denied**
+**`langgraph deploy` fails with 403 / permission denied**
 Your API key is a personal token. Generate a service key (`lsv2_sk_...`) in LangSmith settings.
 
 **Notebook can't find `utils` / `agents`**
