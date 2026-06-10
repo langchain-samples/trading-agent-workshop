@@ -11,6 +11,7 @@ Mix-and-match modules for ~1.5 hour customer workshops. Pick 2-3 modules, run th
 | **2** | Deep Agents — Harness, Tools, Subagents, Memory, Middleware, HITL, Skills | ~45 min | `modules/02_deep_agents.ipynb` |
 | **3** | Deploy — `langgraph` CLI + LangSmith Deployments | ~15 min | `modules/03_deploy.ipynb` |
 | **4** | LangSmith — Tracing, querying traces, offline + online evals, annotation queues | ~30 min | `modules/04_langsmith.ipynb` |
+| **5** | LangSmith Engine — Auto-detect recurring failures, diagnose from source, open a fix PR, deploy evaluators | ~30 min | `modules/05_engine.ipynb` |
 
 Each module is a standalone Jupyter notebook. Modules share the project's setup, `utils/`, and `agents/` so combining them is as simple as opening multiple notebooks in order.
 
@@ -47,6 +48,15 @@ A few starting points you can run as-is or remix.
 
 1. Module 2 — Deep Agents (45 min)
 2. Module 3 — Deploy (15 min)
+
+### Recipe E — "Self-improving agents" (Module 3 + 4 + 5)
+**75 min.** Deploy the agent, observe + evaluate it by hand, then let **Engine** automate
+the whole detect → diagnose → fix → evaluate loop. Strongest "the platform improves your
+agent for you" arc. Engine needs a quick setup first — see the **Prep** cell in `modules/05_engine.ipynb`.
+
+1. Module 3 — Deploy (15 min)
+2. Module 4 — LangSmith (30 min)
+3. Module 5 — Engine (30 min)
 
 ## Prerequisites
 
@@ -105,6 +115,17 @@ Module 3 deploys the agent at `agents/deep_agent/` to LangSmith via the `langgra
 
 Your `LANGSMITH_API_KEY` must have deployment permissions (use a `lsv2_sk_...` service key).
 
+## Engine (Module 5)
+
+Module 5 walks through **LangSmith Engine** analyzing the deployed agent. Engine's first
+analysis takes ~20 min and it rescans every ~6h, so run the **Prep** cell at the top of
+`modules/05_engine.ipynb` first (deploy, seed traces, turn Engine on).
+
+Engine setup beyond Modules 3–4:
+- An **Org Admin** enables Engine for the workspace once (Settings → Engine enablement) and
+  sets an LCU spend limit.
+- Connect this **GitHub repo** so Engine can diagnose from source and open fix PRs.
+
 ## Project Structure
 
 ```
@@ -127,7 +148,8 @@ modular-workshops/
     ├── 01_langgraph.ipynb          (Module 1)
     ├── 02_deep_agents.ipynb        (Module 2)
     ├── 03_deploy.ipynb             (Module 3)
-    └── 04_langsmith.ipynb          (Module 4)
+    ├── 04_langsmith.ipynb          (Module 4)
+    └── 05_engine.ipynb             (Module 5 — includes a Prep cell)
 ```
 
 ## Common Issues
