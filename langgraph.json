@@ -1,7 +1,8 @@
 {
   "dependencies": ["."],
   "graphs": {
-    "deep_agent": "./agents/deep_agent/agent.py:agent"
+    "deep_agent": "./agents/deep_agent/agent.py:agent",
+    "engine-agent": "./agents/engine_agent/agent.py:agent"
   },
   "env": ".env"
 }
