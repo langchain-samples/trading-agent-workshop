@@ -1,62 +1,8 @@
 # Modular Workshops
 
-Mix-and-match modules for ~1.5 hour customer workshops. Pick 2-3 modules, run them in order, you're done.
+This repository contains hands-on tutorials for learning LangChain, LangGraph, and Deep Agents.
 
-## The Modules
-
-| # | Module | Duration | Notebook |
-|---|--------|----------|----------|
-| **0** | Fleet — slide intro + open the Fleet UI | ~10 min | `modules/00_fleet.ipynb` |
-| **1** | LangGraph 201 — Research agent from scratch (state, nodes, edges, `create_agent` + middleware, supervisor, memory) | ~45 min | `modules/01_langgraph.ipynb` |
-| **2** | Deep Agents — Harness, Tools, Subagents, Memory, Middleware, HITL, Skills | ~45 min | `modules/02_deep_agents.ipynb` |
-| **3** | Deploy — `langgraph` CLI + LangSmith Deployments | ~15 min | `modules/03_deploy.ipynb` |
-| **4** | LangSmith — Tracing, querying traces, offline + online evals, annotation queues | ~30 min | `modules/04_langsmith.ipynb` |
-| **5** | LangSmith Engine — Auto-detect recurring failures, diagnose from source, open a fix PR, deploy evaluators | ~30 min | `modules/05_engine.ipynb` |
-
-Each module is a standalone Jupyter notebook. Modules share the project's setup, `utils/`, and `agents/` so combining them is as simple as opening multiple notebooks in order.
-
-## Slides
-Companion slide deck for all modules: see `slides/README.md` for the links.
-Includes an OSS primer and a LangSmith primer in case background is needed for the audience
-
-## Workshop Recipes (~90 min)
-
-A few starting points you can run as-is or remix.
-
-### Recipe A — "Production-ready agents" (Module 2 + 3 + 4)
-**90 min · matches the Capital One workshop.** Build a deep agent, ship it to LangSmith Deployments, then evaluate it.
-
-1. Module 2 — Deep Agents (45 min)
-2. Module 3 — Deploy (15 min)
-3. Module 4 — LangSmith (30 min)
-
-### Recipe B — "LangGraph foundations in Production" (Module 1 + 3 + 4)
-**90 min.** For teams new to LangChain who want to understand multi-agent design and use it in production.
-
-1. Module 1 — LangGraph 201 (45 min)
-2. Module 3 - Deploy (15 min)
-3. Module 4 — LangSmith (30 min)
-
-### Recipe C — "LangGraph to Deep Agents" (Module 1 + 2)
-**90 min.** Same research agent, two ways: built by hand in LangGraph, then in ~10 lines with `create_deep_agent()`. Strongest A/B teaching arc.
-
-1. Module 1 — LangGraph 201 (45 min)
-2. Module 2 — Deep Agents (45 min)
-
-### Recipe D — "Ship it" (Module 2 + 3)
-**60 min.** Quick "build + deploy" demo for teams who already know LangSmith.
-
-1. Module 2 — Deep Agents (45 min)
-2. Module 3 — Deploy (15 min)
-
-### Recipe E — "Self-improving agents" (Module 3 + 4 + 5)
-**75 min.** Deploy the agent, observe + evaluate it by hand, then let **Engine** automate
-the whole detect → diagnose → fix → evaluate loop. Strongest "the platform improves your
-agent for you" arc. Engine needs a quick setup first — see the **Prep** cell in `modules/05_engine.ipynb`.
-
-1. Module 3 — Deploy (15 min)
-2. Module 4 — LangSmith (30 min)
-3. Module 5 — Engine (30 min)
+This is a condensed version of LangChain Academy, intended to be run in a session with a LangChain engineer. If you're interested in going into more depth, or working through tutorials on your own, check out [LangChain Academy](https://academy.langchain.com/courses/intro-to-langgraph)! LangChain Academy has helpful pre-recorded videos from our LangChain engineers.
 
 ## Prerequisites
 
@@ -77,7 +23,7 @@ cp .env.example .env
 | Key | Required for | Get one |
 |-----|--------------|---------|
 | `OPENAI_API_KEY` | Modules 1-4 (default model) | <https://platform.openai.com> |
-| `LANGSMITH_API_KEY` | Modules 3 & 4 (recommended for all) | <https://smith.langchain.com> |
+| `LANGSMITH_API_KEY` | Modules 3, 4 & 5 (recommended for all) | <https://smith.langchain.com> |
 | `TAVILY_API_KEY` | Modules 2 & 3 (web search tool) | <https://tavily.com> |
 
 ```bash
@@ -117,14 +63,9 @@ Your `LANGSMITH_API_KEY` must have deployment permissions (use a `lsv2_sk_...` s
 
 ## Engine (Module 5)
 
-Module 5 walks through **LangSmith Engine** analyzing the deployed agent. Engine's first
-analysis takes ~20 min and it rescans every ~6h, so run the **Prep** cell at the top of
-`modules/05_engine.ipynb` first (deploy, seed traces, turn Engine on).
+Module 5 introduces **LangSmith Engine** — it reads your deployed agent's production traces, clusters recurring failures into issues, diagnoses the root cause against your connected source code, and proposes fixes as GitHub PRs. It runs on the Module 3 deployment, driven through an *assistant* (a saved graph configuration) that swaps in a deliberately broken search tool so Engine has a clear, reproducible issue to find.
 
-Engine setup beyond Modules 3–4:
-- An **Org Admin** enables Engine for the workspace once (Settings → Engine enablement) and
-  sets an LCU spend limit.
-- Connect this **GitHub repo** so Engine can diagnose from source and open fix PRs.
+Engine's first analysis takes ~20 minutes, so it's best primed before a session. Needs the Module 3 deployment and a `LANGSMITH_API_KEY`.
 
 ## Project Structure
 
@@ -137,7 +78,7 @@ modular-workshops/
 ├── utils/
 ├── agents/
 │   ├── research_agent.py           (shared agent factory — Module 2 references, Module 4 imports for eval)
-│   └── deep_agent/                 (deployable agent for Module 3)
+│   └── deep_agent/                 (deployable agent for Modules 3 & 5)
 │       ├── agent.py
 │       ├── AGENTS.md
 │       └── skills/
@@ -149,7 +90,7 @@ modular-workshops/
     ├── 02_deep_agents.ipynb        (Module 2)
     ├── 03_deploy.ipynb             (Module 3)
     ├── 04_langsmith.ipynb          (Module 4)
-    └── 05_engine.ipynb             (Module 5 — includes a Prep cell)
+    └── 05_engine.ipynb             (Module 5)
 ```
 
 ## Common Issues
