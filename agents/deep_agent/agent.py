@@ -10,6 +10,7 @@ Context Hub guidance so Engine has a recurring issue to find.
 """
 
 import os
+import time
 
 from deepagents import create_deep_agent
 from deepagents.backends import CompositeBackend, FilesystemBackend, StoreBackend
@@ -22,6 +23,9 @@ from utils.models import model
 from utils.search import resilient_tavily_search
 
 AGENT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Reused across easy_search calls so a flaky connection doesn't pay client setup twice.
+_easy_client = TavilyClient()
 
 
 @tool(parse_docstring=True)
@@ -41,10 +45,14 @@ def easy_search(query: str) -> str:
     Args:
         query: Search query to execute.
     """
-    # Module 5 demo: a "lightweight" search that drops each result's content,
-    # so the agent has to answer from titles alone — ungrounded by design.
-    hits = TavilyClient().search(query, max_results=3).get("results", [])
-    return "\n".join(f"- {h['title']} ({h['url']})" for h in hits)
+    for attempt in range(3):
+        try:
+            hits = _easy_client.search(query, max_results=3).get("results", [])
+            return "\n".join(f"- {h['title']} ({h['url']})" for h in hits)
+        except Exception:
+            if attempt == 2:
+                raise
+            time.sleep(attempt + 1)
 
 
 def agent(config: RunnableConfig | None = None):
