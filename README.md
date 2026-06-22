@@ -23,7 +23,8 @@ cp .env.example .env
 | Key | Required for | Get one |
 |-----|--------------|---------|
 | `OPENAI_API_KEY` | Modules 1-4 (default model) | <https://platform.openai.com> |
-| `LANGSMITH_API_KEY` | Modules 3, 4 & 5 (recommended for all) | <https://smith.langchain.com> |
+| `LANGSMITH_API_KEY` | Modules 3 & 4 (recommended for all) | <https://smith.langchain.com> |
+| `LANGSMITH_API_KEY_GATEWAY` / `WORKSPACE_ID` | Module 3 §1 (LangSmith Gateway policies) | same key as `LANGSMITH_API_KEY`; workspace ID from LangSmith Settings → Workspace |
 | `TAVILY_API_KEY` | Modules 2 & 3 (web search tool) | <https://tavily.com> |
 
 ```bash
@@ -55,11 +56,15 @@ model = init_chat_model("openai:gpt-4.1-mini")
 # model = ChatBedrockConverse(provider="anthropic", model_id="...")
 ```
 
-## Deploy (Module 3)
+`utils/models.py` also ships a commented-out **LangSmith Gateway** block. Module 3 §1.4 walks through flipping the default to it so every model call (notebooks *and* the deployed agent) is routed through the gateway and subject to workspace policies.
 
-Module 3 deploys the agent at `agents/deep_agent/` to LangSmith via the `langgraph` CLI (installed by `uv sync`). The deploy config is `langgraph.json` at the workshop root.
+## Deploy + Govern (Module 3)
 
-Your `LANGSMITH_API_KEY` must have deployment permissions (use a `lsv2_sk_...` service key).
+Module 3 first creates a workspace-level **LangSmith Gateway** policy (PII / secrets redaction), routes the model through the gateway, then deploys the agent at `agents/deep_agent/` to LangSmith via the `langgraph` CLI (installed by `uv sync`). The deploy config is `langgraph.json` at the workshop root.
+
+Because `agents/deep_agent/agent.py` imports `model` from `utils.models`, whichever block is active in `utils/models.py` at deploy time is what ships — flip on the gateway block and the deployed agent inherits it with no extra flags.
+
+Your `LANGSMITH_API_KEY` must have deployment permissions (use a `lsv2_sk_...` service key). The gateway block reads `LANGSMITH_API_KEY_GATEWAY` (the same key under a non-reserved name, since `langgraph deploy` strips `LANGSMITH_API_KEY` during upload).
 
 ## Engine (Module 5)
 
@@ -78,7 +83,7 @@ modular-workshops/
 ├── utils/
 ├── agents/
 │   ├── research_agent.py           (shared agent factory — Module 2 references, Module 4 imports for eval)
-│   └── deep_agent/                 (deployable agent for Modules 3 & 5)
+│   └── deep_agent/                 (deployable + governed agent for Module 3)
 │       ├── agent.py
 │       ├── AGENTS.md
 │       └── skills/
@@ -88,9 +93,8 @@ modular-workshops/
 └── modules/
     ├── 01_langgraph.ipynb          (Module 1)
     ├── 02_deep_agents.ipynb        (Module 2)
-    ├── 03_deploy.ipynb             (Module 3)
-    ├── 04_langsmith.ipynb          (Module 4)
-    └── 05_engine.ipynb             (Module 5)
+    ├── 03_deploy_and_govern.ipynb  (Module 3)
+    └── 04_langsmith.ipynb          (Module 4)
 ```
 
 ## Common Issues
@@ -100,3 +104,6 @@ Your API key is a personal token. Generate a service key (`lsv2_sk_...`) in Lang
 
 **Notebook can't find `utils` / `agents`**
 Each module's setup cell prepends `project_root` (the workshop root) to `sys.path`. If you moved a notebook, update the `Path().resolve().parent` line to point at the workshop root.
+
+## For LangChain Internal Users
+Please refer to this linked [Notion document](https://app.notion.com/p/Modular-Workshops-37d808527b1780318063fd210446aa03?source=copy_link) for instructions on setup and usage.
