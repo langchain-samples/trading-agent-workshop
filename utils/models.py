@@ -14,17 +14,25 @@ load_dotenv(dotenv_path="../.env", override=True)
 
 from langchain.chat_models import init_chat_model
 
-# --- Default: OpenAI, direct ---
-model = init_chat_model("openai:gpt-4.1-mini")
-
-# --- OpenAI via the LangSmith LLM Gateway (Module 3 §1.4) ---
+# --- Default: OpenAI via the LangSmith LLM Gateway (Module 3 §1.4) ---
 # Routes every model call through the LangSmith Gateway so that workspace
 # policies (PII / secrets / allow-lists / cost caps) are enforced.
+model = init_chat_model(
+    model="gpt-4.1-mini",
+    model_provider="openai",
+    base_url="https://gateway.smith.langchain.com/openai",
+    api_key=os.environ["LANGSMITH_API_KEY_GATEWAY"],
+)
+
+# --- Default: OpenAI, direct ---
+# model = init_chat_model("openai:gpt-4.1-mini")
+
+# --- OpenAI via TrueFoundry
 # model = init_chat_model(
 #     model="gpt-4.1-mini",
 #     model_provider="openai",
-#     base_url="https://gateway.smith.langchain.com/openai",
-#     api_key=os.environ["LANGSMITH_API_KEY_GATEWAY"],
+#     base_url="https://gateway.truefoundry.ai",
+#     api_key=os.environ["TRUEFOUNDRY_API_KEY_GATEWAY"],
 # )
 
 # --- Anthropic ---
