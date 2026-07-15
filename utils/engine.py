@@ -11,15 +11,21 @@ import os
 import re
 import subprocess
 
-ASSISTANT_NAME = "engine-demo"
+from utils.workshop import scoped
+
 GRAPH_ID = "deep_agent"
+
+# Users share one deployment, so its assistant and Context Hub repo are named
+# resources multiple attendees would otherwise clobber. Scope both per user.
+ASSISTANT_NAME = scoped("engine-demo")
+CONTEXT_REPO = scoped("engine-demo-context")
 
 # deep_agent + the broken search tool and weak context that give Engine a
 # clear, recurring failure to find. Interrupts off so seed runs finish unattended.
 ENGINE_CONFIG = {"configurable": {
     "search_tool": "easy",
     "interrupts": False,
-    "context_repo": "engine-demo-context",
+    "context_repo": CONTEXT_REPO,
 }}
 
 
