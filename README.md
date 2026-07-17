@@ -54,6 +54,14 @@ model = init_chat_model("openai:gpt-4.1-mini")
 # AWS Bedrock
 # from langchain_aws import ChatBedrockConverse
 # model = ChatBedrockConverse(provider="anthropic", model_id="...")
+
+# OpenAI via TrueFoundry
+# model = init_chat_model(
+#     model="gpt-4.1-mini",
+#     model_provider="openai",
+#     base_url="https://gateway.truefoundry.ai",
+#     api_key=os.environ["TRUEFOUNDRY_API_KEY_GATEWAY"],
+# )
 ```
 
 `utils/models.py` also ships a commented-out **LangSmith Gateway** block. Module 3 §1.4 walks through flipping the default to it so every model call (notebooks *and* the deployed agent) is routed through the gateway and subject to workspace policies.

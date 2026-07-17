@@ -19,6 +19,7 @@ from uuid import UUID
 
 import requests
 from langsmith import Client
+from langsmith import schemas as ls_schemas
 
 
 # --------------------------------------------------------------------------- #
@@ -29,12 +30,44 @@ def get_or_create_annotation_queue(
     client: Client,
     name: str,
     description: str = "",
+    *,
+    rubric_instructions: Optional[str] = None,
+    rubric_items: Optional[Sequence["ls_schemas.AnnotationQueueRubricItem"]] = None,
 ):
-    """Return an existing annotation queue by name, or create one."""
+    """Return an existing annotation queue by name, or create one.
+
+    `rubric_instructions` is free-text guidance shown to reviewers at the top of
+    the queue (what to look for, how to triage). `rubric_items` is a list of
+    feedback prompts reviewers fill in per run — each item links a
+    `feedback_key` to a description and optional score/value guidance. Both are
+    passed straight through to the LangSmith SDK.
+
+    If a queue with `name` already exists, we update its instructions and rubric
+    (when provided) so re-running the cell keeps the queue in sync.
+    """
+    rubric_items = list(rubric_items) if rubric_items else None
+
     existing = list(client.list_annotation_queues(name=name))
     if existing:
-        return existing[0]
-    return client.create_annotation_queue(name=name, description=description)
+        queue = existing[0]
+        if rubric_instructions is not None or rubric_items is not None:
+            client.update_annotation_queue(
+                queue.id,
+                name=name,
+                description=description or queue.description,
+                rubric_instructions=rubric_instructions,
+                rubric_items=rubric_items,
+            )
+            # Re-read so the caller sees the updated queue.
+            queue = client.read_annotation_queue(queue.id)
+        return queue
+
+    return client.create_annotation_queue(
+        name=name,
+        description=description,
+        rubric_instructions=rubric_instructions,
+        rubric_items=rubric_items,
+    )
 
 
 # --------------------------------------------------------------------------- #
