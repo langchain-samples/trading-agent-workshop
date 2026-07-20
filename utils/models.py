@@ -13,6 +13,7 @@ from dotenv import load_dotenv
 load_dotenv(dotenv_path="../.env", override=True)
 
 from langchain.chat_models import init_chat_model
+from langchain_openai import ChatOpenAI
 
 # --- Default: OpenAI via the LangSmith LLM Gateway (Module 3 §1.4) ---
 # Routes every model call through the LangSmith Gateway so that workspace
@@ -28,6 +29,12 @@ model = init_chat_model(
 # model = init_chat_model("openai:gpt-4.1-mini")
 
 # --- OpenAI via TrueFoundry
+model = ChatOpenAI(
+    model="gpt-4.1-mini",
+    model_provider="openai",
+    base_url="https://tfy-dev.aiops.cloudapps.cargill.com",
+    api_key=os.environ["TRUEFOUNDRY_API_KEY_GATEWAY"],
+)
 # model = init_chat_model(
 #     model="gpt-4.1-mini",
 #     model_provider="openai",
