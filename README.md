@@ -24,7 +24,7 @@ cp .env.example .env
 |-----|--------------|---------|
 | `OPENAI_API_KEY` | Modules 1-2 (default model) | <https://platform.openai.com> |
 | `LANGSMITH_API_KEY` | Modules 1 & 2 (recommended for all) | <https://smith.langchain.com> |
-| `LANGSMITH_API_KEY_GATEWAY` / `WORKSPACE_ID` | same key as `LANGSMITH_API_KEY`; workspace ID from LangSmith Settings → Workspace |
+| `TRUEFOUNDRY_API_KEY_GATEWAY` | All Modules |
 | `TAVILY_API_KEY` | Modules 1 & 2 (web search tool) | <https://tavily.com> |
 
 ```bash
@@ -64,7 +64,7 @@ model = init_chat_model("openai:gpt-4.1-mini")
 # )
 ```
 
-`utils/models.py` also ships a commented-out **LangSmith Gateway** block. Module 3 §1.4 walks through flipping the default to it so every model call (notebooks *and* the deployed agent) is routed through the gateway and subject to workspace policies.
+`utils/models.py` ships a **TrueFoundry Gateway** block. Every model call is routed through the gateway and subject to organization policies.
 
 
 ## Project Structure
