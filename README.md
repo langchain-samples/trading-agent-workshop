@@ -19,7 +19,7 @@ uv sync
 cp .env.example .env
 # Edit .env and fill in your keys
 ```
-
+#### Please ensure that your OPENAI_API_KEY is set to your TRUEFOUNDRY_API_KEY_GATEWAY
 | Key | Required for | Get one |
 |-----|--------------|---------|
 | `OPENAI_API_KEY` | Modules 1-2 (default model) | <https://platform.openai.com> |

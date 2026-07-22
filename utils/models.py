@@ -18,29 +18,28 @@ from langchain_openai import ChatOpenAI
 # --- Default: OpenAI via the LangSmith LLM Gateway (Module 3 §1.4) ---
 # Routes every model call through the LangSmith Gateway so that workspace
 # policies (PII / secrets / allow-lists / cost caps) are enforced.
-model = init_chat_model(
-    model="gpt-4.1-mini",
-    model_provider="openai",
-    base_url="https://gateway.smith.langchain.com/openai",
-    api_key=os.environ["LANGSMITH_API_KEY_GATEWAY"],
-)
+# model = init_chat_model(
+#     model="gpt-4.1-mini",
+#     model_provider="openai",
+#     base_url="https://gateway.smith.langchain.com/openai",
+#     api_key=os.environ["LANGSMITH_API_KEY_GATEWAY"],
+# )
 
 # --- Default: OpenAI, direct ---
 # model = init_chat_model("openai:gpt-4.1-mini")
 
 # --- OpenAI via TrueFoundry
-model = ChatOpenAI(
-    model="gpt-4.1-mini",
-    model_provider="openai",
-    base_url="https://tfy-dev.aiops.cloudapps.cargill.com",
-    api_key=os.environ["TRUEFOUNDRY_API_KEY_GATEWAY"],
-)
-# model = init_chat_model(
+# model = ChatOpenAI(
 #     model="gpt-4.1-mini",
 #     model_provider="openai",
-#     base_url="https://gateway.truefoundry.ai",
+#     base_url="https://tfy-dev.aiops.cloudapps.cargill.com",
 #     api_key=os.environ["TRUEFOUNDRY_API_KEY_GATEWAY"],
 # )
+model = init_chat_model(
+    model="openai/gpt-5-nano-2025-08-07",
+    model_provider="openai",
+    base_url="https://tfy-dev.aiops.cloudapps.cargill.com"
+)
 
 # --- Anthropic ---
 # model = init_chat_model("anthropic:claude-sonnet-4-5")
