@@ -59,7 +59,7 @@ All modules import `model` from `utils/models.py`. Change one line there to swap
 model = init_chat_model(
     model="openai/gpt-5-nano-2025-08-07",
     model_provider="openai",
-    base_url="https://tfy-dev.aiops.cloudapps.cargill.com"
+    base_url="<base_url>"
 )
 ```
 
